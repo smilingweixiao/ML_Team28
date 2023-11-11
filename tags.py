@@ -93,7 +93,7 @@ class DCM_tags:
                 else:
                     flipVert = False
             else:
-                print(f"No matching view for current MAMMO, current view:{self.view}, current orientation: {self.orientation}")
+                print(f"No matching view for current MAMMO, current view:{view}, current orientation: {orientation}")
                 flipHorz = False
                 flipVert = False
         else:

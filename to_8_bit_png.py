@@ -35,6 +35,7 @@ def apply_windowing(arr,
 
         arr[below] = y_min
         arr[above] = y_max
+        
         if between.any():
             arr[between] = ((
                 (arr[between] - window_center) / window_width + 0.5) * y_range
