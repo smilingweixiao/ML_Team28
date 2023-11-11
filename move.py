@@ -12,7 +12,6 @@ selected_clinical_path = "E:\\ml\\table\\clean_clinical.csv"
 miss_metadata_path = "E:\\ml\\table\\miss_metadata.csv"
 miss_clinical_path = "E:\\ml\\table\\miss_clinical.csv"
 
-
 all_clean_metadata = metadata[metadata['ROI_coords']!='()'].to_dict(orient='records')
 all_dirty_metadata = metadata[metadata['ROI_coords']=='()'] 
 all_clean_clinical = clinical[clinical['massshape'].notna()] 
@@ -61,4 +60,3 @@ clean_metadata.to_csv(selected_metadata_path, sep=',', index=True, header=True)
 clean_clinical.to_csv(selected_clinical_path, sep=',', index=True, header=True)
 dirty_metadata.to_csv(miss_metadata_path, sep=',', index=True, header=True)
 dirty_clinical.to_csv(miss_clinical_path, sep=',', index=True, header=True)
-
