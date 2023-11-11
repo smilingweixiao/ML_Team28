@@ -1,6 +1,6 @@
 import pandas as pd
 import csv
-p
+
 patient_id="empi_anon"
 RANDOM_SEED=1
 TOTAL_ROW=20000
@@ -11,7 +11,6 @@ selected_metadata_path = "E:\\ml\\table\\clean_metadata.csv"
 selected_clinical_path = "E:\\ml\\table\\clean_clinical.csv"
 miss_metadata_path = "E:\\ml\\table\\miss_metadata.csv"
 miss_clinical_path = "E:\\ml\\table\\miss_clinical.csv"
-
 
 all_clean_metadata = metadata[metadata['ROI_coords']!='()'].to_dict(orient='records')
 all_dirty_metadata = metadata[metadata['ROI_coords']=='()'] 
