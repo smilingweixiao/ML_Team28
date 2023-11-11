@@ -28,7 +28,8 @@ def get_png(dcm_pth, png_pth):
     meta = DCM_tags(dicom_image)
     arr = np.array(process_dicom(dicom_image.pixel_array, meta.invert, meta.flipHorz, meta.window_centers[0], meta.window_widths[0], meta.voilut_func), dtype=np.uint8)
     cv2.imwrite(png_pth, arr)
-
+    
+#uncomment here if you are ready
 #for name in miss_dicoms:
 #    dcm_pth = miss_path+name
 #    png_pth = miss_png_path+name+".png"
