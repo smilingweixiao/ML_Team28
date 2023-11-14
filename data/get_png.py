@@ -10,12 +10,12 @@ from to_8_bit_png import process_dicom, apply_windowing
 #dcm_pth = r"..\image\clean\1.2.826.0.1.3680043.8.498.10000118454892828674141713285403927285.dcm"
 
 # modify the routes if needs
-miss_table_path = "..\\table\\miss_metadata.csv"
-clean_table_path = "..\\table\\clean_metadata.csv"
-miss_png_path = "..\\image\\miss_png\\"
-clean_png_path = "..\\image\\clean_png\\"
-miss_path = "..\\image\\miss\\"
-clean_path = "..\\image\\clean\\"
+miss_table_path = "..\\..\\table\\miss_metadata.csv"
+clean_table_path = "..\\..\\table\\clean_metadata.csv"
+miss_png_path = "..\\..\\image\\miss_png\\"
+clean_png_path = "..\\..\\image\\clean_png\\"
+miss_path = "..\\..\\image\\miss\\"
+clean_path = "..\\..\\image\\clean\\"
 
 miss_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(miss_table_path, dtype=str)['anon_dicom_path']))
 clean_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(clean_table_path, dtype=str)['anon_dicom_path']))
