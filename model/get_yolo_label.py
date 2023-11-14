@@ -11,7 +11,6 @@ roi = df['ROI_coords']
 
 # i-th image
 for i in range(len(image)):
-    if (i == 100): break
     name = image[i][-68:]
     with open(f'{yolo_label_path}\{name}.txt', 'w') as f:
         # there's j-th roi in i-th image
@@ -34,4 +33,4 @@ for i in range(len(image)):
             w = xmax - xmin
             h = ymax - ymin
             print(i + 2, ymin, xmin, ymax, xmax)
-            f.write(f'0, {(xmin + xmax) / (2 * w)} {(ymin + ymax) / (2 * h)} {(xmax - xmin) / w} {(ymax - ymin) / h}\n')
+            f.write(f'0 {(xmin + xmax) / (2 * w)} {(ymin + ymax) / (2 * h)} {(xmax - xmin) / w} {(ymax - ymin) / h}\n')
