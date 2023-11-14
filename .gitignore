@@ -1,1 +1,6 @@
 model/yolov7/datasets
+datasets/image/clean/*.dcm
+datasets/image/miss/*.dcm
+datasets/image/clean_png/*.png
+datasets/image/miss_png/*.png
+datasets/label/train/*.txt
