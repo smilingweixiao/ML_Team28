@@ -4,3 +4,9 @@ datasets/image/miss/*.dcm
 datasets/image/clean_png/*.png
 datasets/image/miss_png/*.png
 datasets/label/train/*.txt
+
+src/yolov7/weights/*.pt
+src/yolov7/models/__pycache__
+src/yolov7/utils/__pycache__
+src/yolov7/__pycache__
+*.pt
