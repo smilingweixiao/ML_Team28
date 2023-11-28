@@ -1,3 +1,7 @@
+# run this before you run preprocess.ipynb !!!
+# run this code for only ONCE !!!
+# if you want to run it twice, you MUST comment line 59 !!!
+
 import pydicom
 import cv2
 import numpy as np
