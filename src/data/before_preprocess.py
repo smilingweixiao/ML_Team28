@@ -285,10 +285,10 @@ def ChackPaddle(i, isClean):
 
 
 #uncomment here if you are ready
-#for i, name in enumerate(miss_dicoms):
-#    dcm_pth = miss_path+name
-#    png_pth = miss_png_path+name+".png"
-#    get_png(dcm_pth, png_pth, i, isClean=False)
+for i, name in enumerate(miss_dicoms):
+   dcm_pth = miss_path+name
+   png_pth = miss_png_path+name+".png"
+   get_png(dcm_pth, png_pth, i, isClean=False)
     
 for i, name in enumerate(clean_dicoms):
     dcm_pth = clean_path+name
