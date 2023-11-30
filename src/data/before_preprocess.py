@@ -1,6 +1,5 @@
 # run this before you run preprocess.ipynb !!!
-# run this code for only ONCE !!!
-# if you want to run it twice, you MUST comment line 59 !!!
+# if you just want to get the paddle-removed image, uncomment line 41-44, 283-284, 301-302 and comment
 
 import pydicom
 import cv2
@@ -37,37 +36,21 @@ clean_metadata = pd.read_csv(clean_table_path, dtype=str)
 miss_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(miss_table_path, dtype=str)['anon_dicom_path']))
 clean_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(clean_table_path, dtype=str)['anon_dicom_path']))
 
-def get_png(dcm_pth, png_pth, i, isClean):
+def get_png(dcm_pth, png_pth):
     #for test
-    print('img#: ', i)
-    withPaddle = ChackPaddle(i, isClean)
-    if not withPaddle[0]:
-        return
+    #print('img#: ', i)
+    #withPaddle = ChackPaddle(i, isClean)
+    #if not withPaddle[0]:
+    #    return None
     
     dicom_image = pydicom.dcmread(dcm_pth)
     if "WindowWidth" not in dicom_image or "WindowCenter" not in dicom_image:
         return
     meta = DCM_tags(dicom_image)
     arr = np.array(process_dicom(dicom_image.pixel_array, meta.invert, meta.flipHorz, meta.window_centers[0], meta.window_widths[0], meta.voilut_func), dtype=np.uint8)
-    
-    #withPaddle = ChackPaddle(i, isClean)
-    
-    if withPaddle[0]:
-        extracted = fix_paddle(arr, withPaddle[1])
-        if (extracted == arr).all():
-            #only do once
-            #os.remove(png_pth)
-            return
-        
-        # for debug
-        cv2.imwrite(png_pth, extracted)
-        # comment here if you are debugging with paddle
-        #cv2.imwrite(png_pth, extracted)
-        
-        
-    #cv2.imwrite(png_pth, arr)
-    if(isClean):
-        fix_table(i, False, np.size(arr, 1))      
+
+    cv2.imwrite(png_pth, arr)
+    return arr
 
 def detect_paddle_shape(image):
     # 灰度化
@@ -296,14 +279,52 @@ def ChackPaddle(i, isClean):
 for i, name in enumerate(miss_dicoms):
    dcm_pth = miss_path+name
    png_pth = miss_png_path+name+".png"
-   get_png(dcm_pth, png_pth, i, isClean=False)
+   arr = get_png(dcm_pth, png_pth)
+   #if arr is None:
+   #    continue
+   withPaddle = ChackPaddle(i, False)
+    
+   if withPaddle[0]:
+       extracted = fix_paddle(arr, withPaddle[1])
+       if (extracted == arr).all():
+           
+            os.remove(png_pth)
+            continue
+        
+       cv2.imwrite(png_pth, extracted)
+    
     
 for i, name in enumerate(clean_dicoms):
     dcm_pth = clean_path+name
     png_pth = clean_png_path+name+".png"
-    get_png(dcm_pth, png_pth, i, isClean=True)
-    #print(np.unique((clean_metadata[clean_metadata[PADDLE].notna()])[PADDLE]))
+    arr = get_png(dcm_pth, png_pth)
+    #if arr is None:
+    #    continue
+    withPaddle = ChackPaddle(i, True)
+    if withPaddle[0]:
+       extracted = fix_paddle(arr, withPaddle[1])
+       
+       if (extracted == arr).all():
+            os.remove(png_pth)
+            continue
+        
+       cv2.imwrite(png_pth, extracted)
     #break
+
+
+#---------to make table be consistent with image
+delete_rows = []
+for i, name in enumerate(clean_dicoms):
+    #print(i)
     
+    png_pth = clean_png_path+name+".png"
+    if cv2.imread(png_pth) is None:
+        print(i)
+        delete_rows.append(i)
+        continue
+    fix_table(i, False, 0)
+        
+clean_metadata = clean_metadata.drop(delete_rows)
+
 clean_metadata.to_csv(clean_table_path_fixed, sep=',', index=False, header=True)
     
