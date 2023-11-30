@@ -56,7 +56,7 @@ def get_png(dcm_pth, png_pth, i, isClean):
         extracted = fix_paddle(arr, withPaddle[1])
         if (extracted == arr).all():
             #only do once
-            os.remove(png_pth)
+            #os.remove(png_pth)
             return
         
         # for debug
@@ -66,8 +66,8 @@ def get_png(dcm_pth, png_pth, i, isClean):
         
         
     #cv2.imwrite(png_pth, arr)
-    #if(isClean):
-    #    fix_table(i, meta.flipHorz, np.size(arr, 1))      
+    if(isClean):
+        fix_table(i, False, np.size(arr, 1))      
 
 def detect_paddle_shape(image):
     # 灰度化
@@ -121,7 +121,9 @@ def fix_table(row, isFlip, length):
                             coord = (c_2[0], (length-int(c_2[3])), c_2[2], (length-int(c_2[1])))
                             coords.append(tuple(coord))
                     except:
-                        pass
+                        for c_3 in c_2:
+                            coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
+                            coords.append(tuple(coord))
                         
             except:
                 print(row, "error", row, c)
@@ -150,7 +152,9 @@ def fix_table(row, isFlip, length):
                             coord = (int(c_2[0]), int(c_2[1]), int(c_2[2]), int(c_2[3]))
                             coords.append(tuple(coord))
                     except:
-                        pass
+                        for c_3 in c_2:
+                            coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
+                            coords.append(tuple(coord))
             except:
                 print(row, "error", row, c)
                 #pass
@@ -301,5 +305,5 @@ for i, name in enumerate(clean_dicoms):
     #print(np.unique((clean_metadata[clean_metadata[PADDLE].notna()])[PADDLE]))
     #break
     
-#clean_metadata.to_csv(clean_table_path_fixed, sep=',', index=False, header=True)
+clean_metadata.to_csv(clean_table_path_fixed, sep=',', index=False, header=True)
     

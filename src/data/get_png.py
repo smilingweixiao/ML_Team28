@@ -118,7 +118,9 @@ def fix_table(row, isFlip, length):
                             coord = (c_2[0], (length-int(c_2[3])), c_2[2], (length-int(c_2[1])))
                             coords.append(tuple(coord))
                     except:
-                        pass
+                        for c_3 in c_2:
+                            coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
+                            coords.append(tuple(coord))
                         
             except:
                 print(row, "error", row, c)
