@@ -4,13 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
+    <title>Image Upload to Hugging Face API</title>
 </head>
 
 <body>
-    <input type="file" id="imageInput" accept="image/*">
-    <button onclick="uploadImage()">Upload Image</button>
-    <img id="previewImage" style="display: none; max-width: 300px; max-height: 300px;">
+    <h1>Upload Image to Hugging Face</h1>
+
+    <!-- File Input for Image Upload -->
+    <input type="file" id="fileInput" accept="image/*">
+
+    <!-- Element to Display the Response -->
+    <div id="responseOutput"></div>
+
+    <!-- Script Tag for JavaScript -->
     <script src="upload.js"></script>
 </body>
 
