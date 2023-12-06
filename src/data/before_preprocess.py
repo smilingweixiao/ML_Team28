@@ -1,5 +1,4 @@
 # run this before you run preprocess.ipynb !!!
-# if you just want to get the paddle-removed image, uncomment line 41-44, 283-284, 301-302 and comment
 
 import pydicom
 import cv2
@@ -17,24 +16,24 @@ PADDLE = '0_ViewCodeSequence_0_ViewModifierCodeSequence_CodeMeaning'
 
 # for detecting paddle
 threshold_factor = 0.95
-min_radius = 50
-max_radius = 300
+#min_radius = 50
+#max_radius = 300
 
 # modify the routes if needs
-miss_table_path = "..\\..\\datasets\\table\\miss_metadata.csv"
-clean_table_path = "..\\..\\datasets\\table\\clean_metadata.csv"
-miss_png_path = "..\\..\\datasets\\image\\miss_png\\"
-clean_png_path = "..\\..\\datasets\\image\\clean_png\\"
-miss_path = "..\\..\\datasets\\image\\miss\\"
-clean_path = "..\\..\\datasets\\image\\clean\\"
-
-clean_table_path_fixed = "..\\..\\datasets\\table\\clean_metadata_fixed.csv"
-
-miss_metadata = pd.read_csv(miss_table_path, dtype=str)
-clean_metadata = pd.read_csv(clean_table_path, dtype=str)
-
-miss_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(miss_table_path, dtype=str)['anon_dicom_path']))
-clean_dicoms = list(map(lambda x: x.split('/')[9], pd.read_csv(clean_table_path, dtype=str)['anon_dicom_path']))
+#miss_table_path = "..\\..\\datasets\\table\\miss_metadata.csv"
+#clean_table_path = "..\\..\\datasets\\table\\clean_metadata.csv"
+#miss_png_path = "..\\..\\datasets\\image\\miss_png\\"
+#clean_png_path = "..\\..\\datasets\\image\\clean_png\\"
+#miss_path = "..\\..\\datasets\\image\\miss\\"
+#clean_path = "..\\..\\datasets\\image\\clean\\"
+#
+#clean_table_path_fixed = "..\\..\\datasets\\table\\clean_metadata_fixed.csv"
+#
+#miss_metadata = pd.read_csv(miss_table_path, dtype=str)
+#clean_metadata = pd.read_csv(clean_table_path, dtype=str)
+#
+#miss_pname_list = list(map(lambda x: x.split('/')[9], pd.read_csv(miss_table_path, dtype=str)['anon_dicom_path']))
+#clean_pname_list = list(map(lambda x: x.split('/')[9], pd.read_csv(clean_table_path, dtype=str)['anon_dicom_path']))
 
 def get_png(dcm_pth, png_pth):
     #for test
@@ -45,11 +44,12 @@ def get_png(dcm_pth, png_pth):
     
     dicom_image = pydicom.dcmread(dcm_pth)
     if "WindowWidth" not in dicom_image or "WindowCenter" not in dicom_image:
-        return
+        print('no window prerocess')
     meta = DCM_tags(dicom_image)
     arr = np.array(process_dicom(dicom_image.pixel_array, meta.invert, meta.flipHorz, meta.window_centers[0], meta.window_widths[0], meta.voilut_func), dtype=np.uint8)
 
     cv2.imwrite(png_pth, arr)
+    
     return arr
 
 def detect_paddle_shape(image):
@@ -78,7 +78,7 @@ def detect_paddle_shape(image):
     # 沒有符合條件
     return "Unknown"        
         
-def fix_table(row, isFlip, length):
+def fix_table(metadata, isFlip):
     coords = []
     
     #print(clean_metadata.loc[row, ROI])
@@ -114,38 +114,39 @@ def fix_table(row, isFlip, length):
             else:
                 coords.append(tuple(coord))
     else:
-        for c in eval(clean_metadata.loc[row, ROI]):
+        for row in range(metadata.shape[0]):
+            for c in eval(metadata.loc[row, ROI]):
             #print(c)
-            try:
-                coord = (int(c[0]), int(c[1]), int(c[2]), int(c[3]))
+                try:
+                    coord = (int(c[0]), int(c[1]), int(c[2]), int(c[3]))
             # tuple還有tuple or lsit
-            except TypeError:
-                print(row, 'type', c)
-                for c_1 in c:
-                    coord = (int(c_1[0]), int(c_1[1]), int(c_1[2]), int(c_1[3]))
-                    coords.append(tuple(coord))
+                except TypeError:
+                    print(row, 'type', c)
+                    for c_1 in c:
+                        coord = (int(c_1[0]), int(c_1[1]), int(c_1[2]), int(c_1[3]))
+                        coords.append(tuple(coord))
             # 逗號後面接()
-            except IndexError:
-                print(row, "index" ,c)
-                if c == '()':
-                    pass
+                except IndexError:
+                    print(row, "index" ,c)
+                    if c == '()':
+                        pass
+                    else:
+                        try:
+                            for c_2 in c:
+                                coord = (int(c_2[0]), int(c_2[1]), int(c_2[2]), int(c_2[3]))
+                                coords.append(tuple(coord))
+                        except:
+                            for c_3 in c_2:
+                                coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
+                                coords.append(tuple(coord))
+                except:
+                    print(row, "error", row, c)
+                        #pass
                 else:
-                    try:
-                        for c_2 in c:
-                            coord = (int(c_2[0]), int(c_2[1]), int(c_2[2]), int(c_2[3]))
-                            coords.append(tuple(coord))
-                    except:
-                        for c_3 in c_2:
-                            coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
-                            coords.append(tuple(coord))
-            except:
-                print(row, "error", row, c)
-                #pass
-            else:
-                coords.append(tuple(coord))
+                    coords.append(tuple(coord))
     #print(row ,coords)
-    clean_metadata.loc[row, ROI] = str(coords)
-    
+        metadata.loc[row, ROI] = str(coords)
+    return metadata
     #print(clean_metadata)
 
 def fix_paddle(arr, type):
@@ -201,7 +202,7 @@ def fix_paddle(arr, type):
         extracted_tissue = arr.copy()
         extracted_tissue[mask == 0] = 0
         extracted_tissue[mask != 0] = arr[mask != 0]
-        print('sucess', paddle_top, paddle_bottom)
+        print('success', paddle_top, paddle_bottom)
 
         #cv2.imshow('img1', arr)
         #cv2.waitKey(0)
@@ -256,7 +257,7 @@ def fix_paddle(arr, type):
         extracted_tissue = arr.copy()
         extracted_tissue[mask == 0] = 0
         extracted_tissue[mask != 0] = arr[mask != 0]
-        print('sucess', paddle_top, paddle_bottom)
+        print('success', paddle_top, paddle_bottom)
 
         #cv2.imshow('img1', arr)
         #cv2.waitKey(0)
@@ -268,63 +269,196 @@ def fix_paddle(arr, type):
     return extracted_tissue
 
 
-def ChackPaddle(i, isClean):
-    if isClean:
-        return clean_metadata.loc[i, PADDLE]=='Spot Compression' or clean_metadata.loc[i, PADDLE]=='Magnification', clean_metadata.loc[i, PADDLE]
-    else:
-        return miss_metadata.loc[i, PADDLE]=='Spot Compression' or miss_metadata.loc[i, PADDLE]=='Magnification', miss_metadata.loc[i, PADDLE]
-
-
-#uncomment here if you are ready
-for i, name in enumerate(miss_dicoms):
-   dcm_pth = miss_path+name
-   png_pth = miss_png_path+name+".png"
-   arr = get_png(dcm_pth, png_pth)
-   #if arr is None:
-   #    continue
-   withPaddle = ChackPaddle(i, False)
+def ChackPaddle(i, metadata):
+    return metadata.loc[i, PADDLE]=='Spot Compression' or metadata.loc[i, PADDLE]=='Magnification', metadata.loc[i, PADDLE]
     
-   if withPaddle[0]:
-       extracted = fix_paddle(arr, withPaddle[1])
-       if (extracted == arr).all():
-           
-            os.remove(png_pth)
-            continue
-        
-       cv2.imwrite(png_pth, extracted)
-    
-    
-for i, name in enumerate(clean_dicoms):
-    dcm_pth = clean_path+name
-    png_pth = clean_png_path+name+".png"
-    arr = get_png(dcm_pth, png_pth)
-    #if arr is None:
-    #    continue
-    withPaddle = ChackPaddle(i, True)
-    if withPaddle[0]:
-       extracted = fix_paddle(arr, withPaddle[1])
-       
-       if (extracted == arr).all():
-            os.remove(png_pth)
-            continue
-        
-       cv2.imwrite(png_pth, extracted)
-    #break
 
 
 #---------to make table be consistent with image
-delete_rows = []
-for i, name in enumerate(clean_dicoms):
-    #print(i)
-    
-    png_pth = clean_png_path+name+".png"
-    if cv2.imread(png_pth) is None:
-        print(i)
-        delete_rows.append(i)
-        continue
-    fix_table(i, False, 0)
-        
-clean_metadata = clean_metadata.drop(delete_rows)
+def delete_rows(pname_list, png_path):
+    delete_rows = []
+    for i, name in enumerate(pname_list):
 
-clean_metadata.to_csv(clean_table_path_fixed, sep=',', index=False, header=True)
+        img_pth = png_path+name
+        try: 
+            if cv2.imread(img_pth) is None:
+                print(i)
+                delete_rows.append(i)
+                continue
+        except:
+            assert 0 < -1, 'wrong png_path'
+        
+    return delete_rows
+        
+
+def update_tables(metadata, pname_list, png_path, output_table_path):
+    
+    #if mass_only:
+    deleted_rows = delete_rows(pname_list, png_path) 
+    metadata = metadata.drop(deleted_rows)
+    metadata = fix_table(metadata, False)
+    metadata.to_csv(output_table_path, sep=',', index=False, header=True)
+
+
+def update_paddles(metadata, pname_list, png_path):
+
+    for i, name in enumerate(pname_list):
+        
+        png = png_path+name
+        
+        arr = cv2.imread(png)
+        
+        withPaddle = ChackPaddle(i, metadata)
+        
+        if withPaddle[0]:
+            extracted = fix_paddle(arr, withPaddle[1])
+       
+            if (extracted == arr).all():
+                os.remove(png)
+                continue
+        
+            cv2.imwrite(png, extracted)
+
+"""
+1. table_only: you have table and need to update them to be consistent with image
+2. paddle_only: you have png files and need to update them with removing paddles => True; Otherwise => False
+3. mass_only: only mass data need to be processed
+4. health_only: only health data need to be processed
+5. do all: mass->health->paddle->table
+"""
+def before_preprocess(table_only=False, paddle_only=False, mass_only=True, health_only=False,\
+    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata.csv",\
+    health_metadata_path = "..\\..\\datasets\\table\\miss_metadata.csv",\
+    mass_png_path = "..\\..\\datasets\\image\\clean_png_test\\",\
+    health_png_path = "..\\..\\datasets\\image\\miss_png\\",\
+    mass_dcm_path = "..\\..\\datasets\\image\\clean\\",\
+    health_dcm_path =  "..\\..\\datasets\\image\\miss\\",\
+    output_mtable_path = "..\\..\\datasets\\table\\clean_metadata_test.csv",\
+    output_htable_path = "..\\..\\datasets\\table\\miss_metadata_fixed.csv",\
+    fname_column = "anon_dicom_path"):
+    
+    #----check input type----#
+    #assert type(paddle_only) is bool
+    assert type(paddle_only) is bool and type(table_only) is bool and type(mass_only) is bool and type(health_only) is bool, 'wrong bool variables'
+    
+    #-----read table----#
+    try:
+        health_metadata = pd.read_csv(health_metadata_path, dtype=str)
+    except:
+        assert 0 < -1, 'wrong miss_metadata_path'
+        
+    try:
+        mass_metadata = pd.read_csv(mass_metadata_path, dtype=str)
+    except:
+        assert 0 < -1, 'wrong mass_metadata_path'
+        
+        
+    #----get png name----#
+    
+    if fname_column == 'anon_dicom_path':
+        try: 
+            if mass_only is True:
+                mass_pname_list = list(map(lambda x: x.split('/')[9]+'.png', mass_metadata[fname_column]))
+                mass_dname_list = list(map(lambda x: x.split('/')[9], mass_metadata[fname_column]))
+            elif health_only is True:
+                health_pname_list = list(map(lambda x: x.split('/')[9]+'.png', health_metadata[fname_column]))
+                health_dname_list = list(map(lambda x: x.split('/')[9], health_metadata[fname_column]))
+            else:
+                mass_pname_list = list(map(lambda x: x.split('/')[9]+'.png', mass_metadata[fname_column]))
+                mass_dname_list = list(map(lambda x: x.split('/')[9], mass_metadata[fname_column]))
+                health_pname_list = list(map(lambda x: x.split('/')[9]+'.png', health_metadata[fname_column]))
+                health_dname_list = list(map(lambda x: x.split('/')[9], health_metadata[fname_column]))
+        except:
+            assert 0 < -1, 'wrong fname_column'
+    
+    else:
+        try:
+            if mass_only is True:
+                mass_pname_list = list(mass_metadata[fname_column])
+            elif health_only is True:
+                health_pname_list = list(health_metadata[fname_column])
+            else:
+                mass_pname_list = list(mass_metadata[fname_column])
+                health_pname_list = list(health_metadata[fname_column])
+        except:
+            assert 0 < -1, 'wrong fname_column'
+                
+    #----do table_only----#
+    
+    if table_only is True:
+        if mass_only is True:
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            
+        elif health_only is True:
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+            
+        else:
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+            
+    #----do paddle_only----#
+    
+    elif paddle_only is True:
+        
+        if mass_only is True:
+            update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            
+        elif health_only is True:
+            update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
+            update_tables(metadata=health_metadata, name_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+            
+        else:
+            update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
+            update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
+            
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+            
+    #----do dcm to png----#
+    
+    else:
+        if mass_only is True:
+            
+            for name in mass_dname_list:
+                dcm_pth = mass_dcm_path+name
+                png_pth = mass_png_path+name+'.png'
+                print(dcm_pth)
+                print(png_pth)
+                get_png(dcm_pth=dcm_pth, png_pth=png_pth)
+                
+            update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+           
+        elif health_only is True:
+            
+            for name in health_dname_list:
+                dcm_pth = health_dcm_path+name
+                png_pth = health_png_path+name+'.png'
+                get_png(dcm_pth=dcm_pth, png_pth=png_pth)
+                
+            update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+            
+        else:
+            for name in mass_pname_list:
+                dcm_pth = mass_dcm_path+name
+                png_pth = mass_png_path+name+'.png'
+                get_png(dcm_pth=dcm_pth, png_pth=png_pth)
+                
+            update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            
+            for name in health_pname_list:
+                dcm_pth = health_dcm_path+name
+                png_pth = health_png_path+name+'.png'
+                get_png(dcm_pth, png_pth)
+                
+            update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
+        
+    
+    
+
+before_preprocess(table_only=True)
     
