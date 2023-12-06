@@ -1,0 +1,38 @@
+/* styles.css */
+
+.magnifieranimation {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 20px solid #000;
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    animation: arrow 1.0s infinite;
+  }
+  
+  @keyframes arrow {
+    0% {
+      transform: translateY(-50%) translateX(0);
+    }
+    18% {
+      transform: translateY(-50%) translateX(10px);
+    }
+    36% {
+        transform: translateY(-50%) translateX(5px);
+    }
+    54% {
+      transform: translateY(-50%) translateX(0);
+    }
+    72% {
+        transform: translateY(-50%) translateX(-5px);
+    }
+    90% {
+      transform: translateY(-50%) translateX(-10px);
+    }
+    100% {
+      transform: translateY(-50%) translateX(0);
+    }
+  }
