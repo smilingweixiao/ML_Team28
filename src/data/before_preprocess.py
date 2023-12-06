@@ -173,7 +173,7 @@ def fix_paddle(arr, type):
         
         _, binary_img = cv2.threshold(arr, threshold_value, 255, cv2.THRESH_BINARY)
         
-        shape = detect_paddle_shape(binary_img)
+        #shape = detect_paddle_shape(binary_img)
         #if shape != "Rectangle":
         #    print(shape)
         #    cv2.imshow('img_error', arr)
@@ -227,7 +227,7 @@ def fix_paddle(arr, type):
         
         _, binary_img = cv2.threshold(arr, threshold_value, 255, cv2.THRESH_BINARY)
         
-        shape = detect_paddle_shape(binary_img)
+        #shape = detect_paddle_shape(binary_img)
         #if shape != "Rectangle":
         #    print(shape)
         #    cv2.imshow('img_error', arr)
@@ -272,9 +272,6 @@ def fix_paddle(arr, type):
 def ChackPaddle(i, metadata):
     return metadata.loc[i, PADDLE]=='Spot Compression' or metadata.loc[i, PADDLE]=='Magnification', metadata.loc[i, PADDLE]
     
-
-
-#---------to make table be consistent with image
 def delete_rows(pname_list, png_path):
     delete_rows = []
     for i, name in enumerate(pname_list):
@@ -294,9 +291,9 @@ def delete_rows(pname_list, png_path):
 def update_tables(metadata, pname_list, png_path, output_table_path):
     
     #if mass_only:
-    deleted_rows = delete_rows(pname_list, png_path) 
-    metadata = metadata.drop(deleted_rows)
+    deleted_rows = delete_rows(pname_list, png_path)
     metadata = fix_table(metadata, False)
+    metadata = metadata.drop(deleted_rows)
     metadata.to_csv(output_table_path, sep=',', index=False, header=True)
 
 
@@ -307,7 +304,9 @@ def update_paddles(metadata, pname_list, png_path):
         png = png_path+name
         
         arr = cv2.imread(png)
-        
+        if arr is None:
+            continue
+            
         withPaddle = ChackPaddle(i, metadata)
         
         if withPaddle[0]:
@@ -327,7 +326,7 @@ def update_paddles(metadata, pname_list, png_path):
 5. do all: mass->health->paddle->table
 """
 def before_preprocess(table_only=False, paddle_only=False, mass_only=True, health_only=False,\
-    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata.csv",\
+    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata_test.csv",\
     health_metadata_path = "..\\..\\datasets\\table\\miss_metadata.csv",\
     mass_png_path = "..\\..\\datasets\\image\\clean_png_test\\",\
     health_png_path = "..\\..\\datasets\\image\\miss_png\\",\
@@ -456,9 +455,8 @@ def before_preprocess(table_only=False, paddle_only=False, mass_only=True, healt
                 
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
             update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
-        
-    
-    
 
-before_preprocess(table_only=True)
+ 
+
+#before_preprocess(paddle_only=True)
     
