@@ -1,0 +1,41 @@
+.container-with-gradient {
+    position: relative;
+    min-height: calc(100vh - 45px);
+    background-image: linear-gradient(to bottom right, #4C230A 50%, #F0E7D8 50%);
+  }
+  
+  .separator {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;/* 將分隔線置於最上層 */
+    background-color: #000; /* 分隔線顏色 */
+  }
+  
+  .separator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%; /* 斜線的寬度 */
+    height: 100%;
+    background-color: transparent;
+    border-right: 1px solid #fff; /* 加入白色邊框以模擬斜線 */
+    transform-origin: right bottom;
+    transform: skewY(-45deg);
+  }
+  
+  .separator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%; /* 斜線的寬度 */
+    height: 100%;
+    background-color: transparent;
+    border-left: 1px solid #fff; /* 加入白色邊框以模擬斜線 */
+    transform-origin: left bottom;
+    transform: skewY(45deg);
+  }
