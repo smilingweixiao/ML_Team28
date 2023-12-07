@@ -219,8 +219,7 @@ def before_preprocess_interface(dicom=None, paddle=None, handle_list=[]):
 def preprocess_interface(dicom=None, view_pos=None, paddle=None):
     
     if dicom is None:
-        return None
-    
+        return None, view_pos, paddle, None
     handle_list=[]
     
     print('Preprocessing data in HuggingFace...')
@@ -230,6 +229,9 @@ def preprocess_interface(dicom=None, view_pos=None, paddle=None):
     print('do ', handle_list, 'in before_preprocess')
     
     bil_img = bilateral_filter(ori_img)
+    #if not isinstance(bil_img, np.ndarray):
+    #   print('Already remove')
+    #    return None
     masked_img = select_breast_area(bil_img)
     clahe_img = clahe(masked_img)
     
@@ -241,14 +243,14 @@ def preprocess_interface(dicom=None, view_pos=None, paddle=None):
         rows, cols = clahe_img.shape
         roi = clahe_img[:3 * rows//4, :cols//3]
         hough_img = hough(roi, clahe_img)
-#        cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', hough_img)
+        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', hough_img)
         handle_list.append('hough')
         print('do ', handle_list, 'in preprocess')
         #----------------------------------------------
         return hough_img, view_pos, paddle, handle_list
         
     else:
-#        cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
+        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
         print('do ', handle_list, 'in preprocess')
         #----------------------------------------------
         return clahe_img, view_pos, paddle, handle_list
@@ -258,6 +260,8 @@ def preprocess_interface(dicom=None, view_pos=None, paddle=None):
 # test
 #dicom = pydicom.dcmread(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\clean\1.2.826.0.1.3680043.8.498.35243124038639653326409267615926837320.dcm")
 #preprocess_interface(dicom=dicom, view_pos='mlo')
+
+
     
     
     

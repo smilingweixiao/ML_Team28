@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import cv2
-
 def process_dicom(dicom, inv, flip, wc, ww, violut_func):
     # proc_img = cv2.resize(dicom, (320, 416), interpolation = cv2.INTER_AREA)
     proc_img = apply_windowing(dicom, ww, wc, violut_func)
