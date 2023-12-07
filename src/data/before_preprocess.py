@@ -153,17 +153,8 @@ def fix_paddle(arr, type):
     paddle_width = 100
     extracted_tissue = arr
     
-    #cv2.namedWindow('img1', cv2.WINDOW_NORMAL)
-    #cv2.namedWindow('img2', cv2.WINDOW_NORMAL)
-    #cv2.namedWindow('img_error', cv2.WINDOW_NORMAL)
-    
     if type == 'Spot Compression':
         
-        #if shape != "Rectangle":
-        #    cv2.imshow('img_error', arr)
-        #    cv2.waitKey(0)
-        #    print(shape)
-        #    return
         
         hist, _ = np.histogram(arr.flatten(), bins=256, range=[0, 256])
         
@@ -172,26 +163,18 @@ def fix_paddle(arr, type):
         threshold_value = int(peak_intensity * threshold_factor)
         
         _, binary_img = cv2.threshold(arr, threshold_value, 255, cv2.THRESH_BINARY)
-        
-        #shape = detect_paddle_shape(binary_img)
-        #if shape != "Rectangle":
-        #    print(shape)
-        #    cv2.imshow('img_error', arr)
-        #    cv2.waitKey(0)
-        #    return extracted_tissue
-        
+     
         row_sums = np.sum(binary_img, axis=1)
-        #
+        
         row_sums[0:500] = 0
         row_sums[len(row_sums)-250:len(row_sums)] = 0
-        #
+        
         paddle_top = np.argmax(row_sums)
         row_sums[paddle_top-paddle_width:paddle_top+paddle_width] = 0
         paddle_bottom = len(row_sums) - np.argmax(np.flip(row_sums))
         
         if paddle_top+paddle_width>=paddle_bottom-paddle_width or paddle_bottom-paddle_top < 400:
-            #cv2.imshow('img_error', arr)
-            #cv2.waitKey(0)
+
             print(paddle_top, paddle_bottom)
             return arr
         
@@ -204,20 +187,8 @@ def fix_paddle(arr, type):
         extracted_tissue[mask != 0] = arr[mask != 0]
         print('success', paddle_top, paddle_bottom)
 
-        #cv2.imshow('img1', arr)
-        #cv2.waitKey(0)
-        #cv2.imshow('img2', extracted_tissue)
-        #cv2.waitKey(0)
-        
-        #cv2.destroyAllWindows()
    
     elif type == 'Magnification':
-        #paddle_width = 300
-        #if shape != "Rectangle":
-        #    cv2.imshow('img_error', arr)
-        #    cv2.waitKey(0)
-        #    print(shape)
-        #    return
         
         hist, _ = np.histogram(arr.flatten(), bins=256, range=[0, 256])
         
@@ -226,14 +197,6 @@ def fix_paddle(arr, type):
         threshold_value = int(peak_intensity * threshold_factor)
         
         _, binary_img = cv2.threshold(arr, threshold_value, 255, cv2.THRESH_BINARY)
-        
-        #shape = detect_paddle_shape(binary_img)
-        #if shape != "Rectangle":
-        #    print(shape)
-        #    cv2.imshow('img_error', arr)
-        #    cv2.waitKey(0)
-        #    cv2.destroyAllWindows()
-        #    return extracted_tissue
         
         row_sums = np.sum(binary_img, axis=1)
         
@@ -245,8 +208,7 @@ def fix_paddle(arr, type):
             return arr
         
         if paddle_top+paddle_width>=paddle_bottom-paddle_width or paddle_bottom-paddle_top < 400:
-            #cv2.imshow('img_error', arr)
-            #cv2.waitKey(0)
+            
             print(paddle_top, paddle_bottom)
             return arr
         
@@ -258,13 +220,6 @@ def fix_paddle(arr, type):
         extracted_tissue[mask == 0] = 0
         extracted_tissue[mask != 0] = arr[mask != 0]
         print('success', paddle_top, paddle_bottom)
-
-        #cv2.imshow('img1', arr)
-        #cv2.waitKey(0)
-        #cv2.imshow('img2', extracted_tissue)
-        #cv2.waitKey(0)
-        
-        #cv2.destroyAllWindows()
         
     return extracted_tissue
 
@@ -456,7 +411,8 @@ def before_preprocess(table_only=False, paddle_only=False, mass_only=True, healt
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
             update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
 
- 
+
+
 
 #before_preprocess(paddle_only=True)
     

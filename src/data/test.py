@@ -7,9 +7,9 @@ import os
 # ---------- get YOLO labels ----------
 
 mass_csv_path = "..\\..\\datasets\\table\\clean_metadata_fixed.csv"
-train_yolo_label_path = r'.\datasets\labels\train'
+#train_yolo_label_path = r'.\datasets\labels\train'
 train_yolo_image_path = r'C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\clean_png'
-val_yolo_label_path = r'.\datasets\labels\val'
+#val_yolo_label_path = r'.\datasets\labels\val'
 val_yolo_image_path = r'C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\clean_png'
 crop_img_path = "..\\..\\datasets\\image\\crop_png"
 
@@ -24,13 +24,14 @@ VAL_NUM = 200
 TOTAL_NUM = TRAIN_NUM + VAL_NUM
 
 # i-th image
+print(len(image))
 for i in range(len(image)):
     if (i == TOTAL_NUM): break
     if (i < TRAIN_NUM): 
-        label_path = train_yolo_label_path
+        #label_path = train_yolo_label_path
         image_path = train_yolo_image_path
     else: 
-        label_path = val_yolo_label_path
+        #label_path = val_yolo_label_path
         image_path = val_yolo_image_path
 
     name = image[i][-68:]
