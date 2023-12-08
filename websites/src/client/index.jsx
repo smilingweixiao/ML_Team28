@@ -2,8 +2,8 @@ import './utils';
 
 import React from 'react'
 import { Provider } from 'react-redux';
-
 import Router_test from './Router_test';
+import Router from './Router';
 import store from './store';
 import { createRoot } from 'react-dom/client';
 
@@ -19,6 +19,7 @@ const root = createRoot(container);
  */
 root.render(
   <Provider store={store}>
-    <Router_test />
+    {/* <Router_test /> */}
+    <Router />
   </Provider>
 );
