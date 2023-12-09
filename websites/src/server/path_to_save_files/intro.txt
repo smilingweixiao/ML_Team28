@@ -1,0 +1,1 @@
+the image that we upload will be saved in this file so that the os in the backend can acess

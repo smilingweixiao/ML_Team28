@@ -19,7 +19,8 @@ class DCM_tags:
         assert len(self.window_centers) == len(self.window_widths)
     def setWindows(self, ds):
         if "WindowWidth" not in ds or "WindowCenter" not in ds:
-            pass
+            self.window_widths = [None]
+            self.window_centers = [None]
         else:
             ww = ds['WindowWidth']
             wc = ds['WindowCenter']
