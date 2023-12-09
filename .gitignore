@@ -10,6 +10,10 @@ datasets/image/miss_png_test/*.png
 datasets/image/crop_png/*.png
 datasets/image/test/*.png
 datasets/image/ROI_training_png/*.png
+datasets/image/MIAS
+datasets/image/MIAS_png
+datasets/image/INbreast
+datasets/image/INbreast_png
 datasets/label/train/*.txt
 
 src/yolov7/weights/*.pt
