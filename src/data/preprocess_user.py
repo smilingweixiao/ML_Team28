@@ -119,6 +119,7 @@ def hough(image, cla_image):
     else:
         return cla_image
 
+
 def fix_paddle(arr, type):
     paddle_width = 100
     threshold_factor = 0.95
@@ -193,7 +194,6 @@ def fix_paddle(arr, type):
         print('success', paddle_top, paddle_bottom)
         
     return extracted_tissue
-
 
 def before_preprocess_interface(dicom=None, paddle=None, handle_list=[]):
     

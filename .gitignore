@@ -5,8 +5,11 @@ datasets/image/clean_png/*.png
 datasets/image/miss_png/*.png
 datasets/image/miss_preprocess_png/*.png
 datasets/image/clean_preprocess_png/*.png
+datasets/image/clean_png_test/*.png
+datasets/image/miss_png_test/*.png
 datasets/image/crop_png/*.png
 datasets/image/test/*.png
+datasets/image/ROI_training_png/*.png
 datasets/image/MIAS
 datasets/image/MIAS_png
 datasets/image/INbreast

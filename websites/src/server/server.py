@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-from preprocess_interface import preprocess_interface as pi
+from preprocess import preprocess_interface as pi
 from werkzeug.utils import secure_filename
 import os
 from flask_cors import CORS

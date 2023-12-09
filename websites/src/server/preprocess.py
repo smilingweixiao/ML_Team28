@@ -1,5 +1,6 @@
 import cv2
 import pydicom
+import base64
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
@@ -118,6 +119,7 @@ def hough(image, cla_image):
     else:
         return cla_image
 
+
 def fix_paddle(arr, type):
     paddle_width = 100
     threshold_factor = 0.95
@@ -193,7 +195,6 @@ def fix_paddle(arr, type):
         
     return extracted_tissue
 
-
 def before_preprocess_interface(dicom=None, paddle=None, handle_list=[]):
     
     handle_list = []
@@ -207,7 +208,7 @@ def before_preprocess_interface(dicom=None, paddle=None, handle_list=[]):
     arr = np.array(process_dicom(dicom.pixel_array, meta.invert, meta.flipHorz, meta.window_centers[0], meta.window_widths[0], meta.voilut_func), dtype=np.uint8)
     extract_tissue = arr
     if type(paddle) is str:
-        
+
         extract_tissue = fix_paddle(arr=arr, type=paddle.lower())
         if not np.array_equal(extract_tissue, arr):
             handle_list.append('paddle')
@@ -216,20 +217,24 @@ def before_preprocess_interface(dicom=None, paddle=None, handle_list=[]):
     return extract_tissue, handle_list
     
     
-def preprocess_interface(dicom=None, view_pos=None, paddle=None):
+def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
     
+    dicom = pydicom.dcmread(dicom_path)
+
     if dicom is None:
-        return None
-    
+        return None, view_pos, paddle, None
     handle_list=[]
     
     print('Preprocessing data in HuggingFace...')
-    
+
     ori_img, handle_list = before_preprocess_interface(dicom, paddle, handle_list)
     
     print('do ', handle_list, 'in before_preprocess')
     
     bil_img = bilateral_filter(ori_img)
+    #if not isinstance(bil_img, np.ndarray):
+    #   print('Already remove')
+    #    return None
     masked_img = select_breast_area(bil_img)
     clahe_img = clahe(masked_img)
     
@@ -241,23 +246,29 @@ def preprocess_interface(dicom=None, view_pos=None, paddle=None):
         rows, cols = clahe_img.shape
         roi = clahe_img[:3 * rows//4, :cols//3]
         hough_img = hough(roi, clahe_img)
-#        cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', hough_img)
+        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', hough_img)
         handle_list.append('hough')
         print('do ', handle_list, 'in preprocess')
+        _, buffer = cv2.imencode('.png', hough_img)
+        png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
-        return hough_img, view_pos, paddle, handle_list
+        return png_as_base64, view_pos, paddle, handle_list
         
     else:
-#        cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
+        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
         print('do ', handle_list, 'in preprocess')
+        _, buffer = cv2.imencode('.png', clahe_img)
+        png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
-        return clahe_img, view_pos, paddle, handle_list
+        return png_as_base64, view_pos, paddle, handle_list
     
 
 
 # test
 #dicom = pydicom.dcmread(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\clean\1.2.826.0.1.3680043.8.498.35243124038639653326409267615926837320.dcm")
 #preprocess_interface(dicom=dicom, view_pos='mlo')
+
+
     
     
     
