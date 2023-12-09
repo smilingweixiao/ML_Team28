@@ -585,6 +585,4 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
             
     print('All Finish !!!!!!!')
     
-      
-preprocess_interface()  
     
