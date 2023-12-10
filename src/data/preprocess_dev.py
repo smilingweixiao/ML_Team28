@@ -243,7 +243,7 @@ def update_paddles(metadata, pname_list, png_path):
         withPaddle = chack_paddle(i, metadata)
         
         if withPaddle[0]:
-            extracted = fix_paddle(arr, withPaddle[1])
+            extracted = fix_roi(arr, withPaddle[1])
        
             if (extracted == arr).all():
                 os.remove(png)
@@ -564,8 +564,8 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
         for i, (name, pos) in enumerate(mass_zip):
             ori_path = mass_png_path+name
             new_path = mass_preprocess_png_path+name
-            ww = int(eval(mass_metadata.loc[i, 'window'])[0])
-            wc = int(eval(mass_metadata.loc[i, 'window'])[1])
+            #ww = int(eval(mass_metadata.loc[i, 'window'])[0])
+            #wc = int(eval(mass_metadata.loc[i, 'window'])[1])
             
             print('Preprocessing mass data...', name)
             bil_img = bilateral_filter(ori_path)
@@ -612,5 +612,3 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
           
     print('All Finish !!!!!!!')
     
-
-preprocess_interface(enhance_only=False, table_only=True)
