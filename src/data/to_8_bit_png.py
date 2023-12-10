@@ -16,7 +16,7 @@ def apply_windowing(arr,
                            voi_func='LINEAR',
                            y_min=0,
                            y_max=255):
-    assert window_width > 0 or window_width == None
+    assert window_width == None or window_width > 0
     y_range = y_max - y_min
     # float64 needed (default) or just float32 ?
     # arr = arr.astype(np.float64)
