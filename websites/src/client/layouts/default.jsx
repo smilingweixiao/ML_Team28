@@ -81,7 +81,6 @@ const DefaultLayout = () => {
                   <FormControl variant="standard" sx={{
                     width: '90%',
                   }}>
-                    <InputLabel id="viewPos">viewPos</InputLabel>
                     <Select
                       labelId="viewPos"
                       id="viewPos"
@@ -100,7 +99,6 @@ const DefaultLayout = () => {
                     width: '90%',
                     p: '1'
                   }}>
-                    <InputLabel id="paddle">paddle</InputLabel>
                     <Select
                       labelId="paddle"
                       id="paddle"
