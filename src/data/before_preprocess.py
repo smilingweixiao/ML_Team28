@@ -83,36 +83,7 @@ def fix_table(metadata, isFlip):
     
     #print(clean_metadata.loc[row, ROI])
     if(isFlip):
-        for c in eval(clean_metadata.loc[row, ROI]):
-            #print(c)
-            try:
-                coord = (c[0], (length-int(c[3])), c[2], (length-int(c[1])))
-            # tuple還有tuple or lsit
-            except TypeError:
-                print(row, "type", c)
-                for c_1 in c:
-                    coord = (c_1[0], (length-int(c_1[3])), c_1[2], (length-int(c_1[1])))
-                    coords.append(tuple(coord))
-            # 逗號後面接() or list with list
-            except IndexError:
-                print(row, "index" ,c)
-                if c == '()':
-                    pass
-                else:
-                    try:
-                        for c_2 in c:
-                            coord = (c_2[0], (length-int(c_2[3])), c_2[2], (length-int(c_2[1])))
-                            coords.append(tuple(coord))
-                    except:
-                        for c_3 in c_2:
-                            coord = (int(c_3[0]), int(c_3[1]), int(c_3[2]), int(c_3[3]))
-                            coords.append(tuple(coord))
-                        
-            except:
-                print(row, "error", row, c)
-                # pass
-            else:
-                coords.append(tuple(coord))
+        return metadata
     else:
         for row in range(metadata.shape[0]):
             for c in eval(metadata.loc[row, ROI]):
