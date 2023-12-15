@@ -25,12 +25,7 @@ threshold_factor = 0.95
 
 #----dicom to png----#
 def get_png(dcm_pth, png_pth):
-    #for test
-    #print('img#: ', i)
-    #withPaddle = ChackPaddle(i, isClean)
-    #if not withPaddle[0]:
-    #    return None
-    
+
     dicom_image = pydicom.dcmread(dcm_pth)
     if "WindowWidth" not in dicom_image or "WindowCenter" not in dicom_image:
         print('no window prerocess')
@@ -75,6 +70,7 @@ def fix_table(metadata, isFlip):
         return metadata, 'error'
     else:
         for row in range(metadata.shape[0]):
+            coords = []
             for c in eval(metadata.loc[row, ROI]):
             #print(c)
                 try:
@@ -89,7 +85,7 @@ def fix_table(metadata, isFlip):
                 except IndexError:
                     print(row, "index" ,c)
                     if c == '()':
-                        pass
+                        continue
                     else:
                         try:
                             for c_2 in c:
@@ -105,11 +101,11 @@ def fix_table(metadata, isFlip):
                 else:
                     coords.append(tuple(coord))
     #print(row ,coords)
-        metadata.loc[row, ROI] = str(coords)
+            metadata.loc[row, ROI] = str(coords)
     return metadata
     #print(clean_metadata)
 
-def fix_roi(arr, type):
+def fix_paddle(arr, type):
     paddle_width = 100
     extracted_tissue = arr
     
@@ -220,12 +216,10 @@ def add_window(dname_list, dcm_path):
     return window_list
     
 
-def update_tables(metadata, pname_list, png_path, dname_list, dcm_path, output_table_path):
+def update_tables(metadata, pname_list, png_path, output_table_path):
     
-    #if mass_only:
     deleted_rows = delete_rows(pname_list, png_path)
-    metadata = fix_roi(metadata, False)
-    metadata['window'] = add_window(dname_list, dcm_path)
+    metadata = fix_table(metadata=metadata, isFlip=False)
     metadata = metadata.drop(deleted_rows)
     
     metadata.to_csv(output_table_path, sep=',', index=False, header=True)
@@ -243,7 +237,7 @@ def update_paddles(metadata, pname_list, png_path):
         withPaddle = chack_paddle(i, metadata)
         
         if withPaddle[0]:
-            extracted = fix_roi(arr, withPaddle[1])
+            extracted = fix_paddle(arr, withPaddle[1])
        
             if (extracted == arr).all():
                 os.remove(png)
@@ -369,12 +363,12 @@ def hough(image, cla_image):
 def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=True, health_only=False,\
     mass_metadata = [],\
     health_metadata = [],\
-    mass_png_path = "..\\..\\datasets\\image\\clean_png_test\\",\
+    mass_png_path = "..\\..\\datasets\\image\\clean_png\\",\
     health_png_path = "..\\..\\datasets\\image\\miss_png\\",\
     mass_dcm_path = "..\\..\\datasets\\image\\clean\\",\
     health_dcm_path =  "..\\..\\datasets\\image\\miss\\",\
     output_mtable_path = "..\\..\\datasets\\table\\clean_metadata_test.csv",\
-    output_htable_path = "..\\..\\datasets\\table\\miss_metadata_fixed.csv",\
+    output_htable_path = "..\\..\\datasets\\table\\miss_metadata_test.csv",\
     mass_pname_list = [],\
     mass_dname_list = [],\
     health_pname_list = [],\
@@ -385,14 +379,14 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
     
     if table_only is True:
         if mass_only is True:
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
             
         elif health_only is True:
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
             
         else:
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
             
     #----do paddle_only----#
     
@@ -400,18 +394,18 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
         
         if mass_only is True:
             update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
             
         elif health_only is True:
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
             
         else:
             update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
             
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
             
     #----do dcm to png----#
     
@@ -426,7 +420,7 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
                 get_png(dcm_pth=dcm_pth, png_pth=png_pth)
                 
             update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
            
         elif health_only is True:
             
@@ -436,7 +430,7 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
                 get_png(dcm_pth=dcm_pth, png_pth=png_pth)
                 
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
             
         else:
             for name in mass_pname_list:
@@ -445,7 +439,7 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
                 get_png(dcm_pth=dcm_pth, png_pth=png_pth)
                 
             update_paddles(metadata=mass_metadata, pname_list=mass_pname_list, png_path=mass_png_path)
-            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, dname_list=mass_dname_list, dcm_path=mass_dcm_path, output_table_path=output_mtable_path)
+            update_tables(metadata=mass_metadata, pname_list= mass_pname_list, png_path=mass_png_path, output_table_path=output_mtable_path)
             
             for name in health_pname_list:
                 dcm_pth = health_dcm_path+name
@@ -453,13 +447,13 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
                 get_png(dcm_pth, png_pth)
                 
             update_paddles(metadata=health_metadata, pname_list=health_pname_list, png_path=health_png_path)
-            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, dname_list=health_dname_list, dcm_path=health_dcm_path, output_table_path=output_htable_path)
+            update_tables(metadata=health_metadata, pname_list= health_pname_list, png_path=health_png_path, output_table_path=output_htable_path)
 
 
 def preprocess_interface(enhance_only = True, table_only=False, paddle_only=False, mass_only=True, health_only=False,\
-    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata_test.csv",\
+    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata.csv",\
     health_metadata_path = "..\\..\\datasets\\table\\miss_metadata.csv",\
-    mass_png_path = "..\\..\\datasets\\image\\clean_png_test\\",\
+    mass_png_path = "..\\..\\datasets\\image\\clean_png\\",\
     health_png_path = "..\\..\\datasets\\image\\miss_png_test\\",\
     mass_dcm_path = "..\\..\\datasets\\image\\clean\\",\
     health_dcm_path =  "..\\..\\datasets\\image\\miss\\",\
@@ -561,7 +555,7 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
            
         
     if  mass_only is True or health_only is False:
-        for i, (name, pos) in enumerate(mass_zip):
+        for name, pos in mass_zip:
             ori_path = mass_png_path+name
             new_path = mass_preprocess_png_path+name
             #ww = int(eval(mass_metadata.loc[i, 'window'])[0])
@@ -612,3 +606,4 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
           
     print('All Finish !!!!!!!')
     
+#preprocess_interface(enhance_only=False, table_only=True)
