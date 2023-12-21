@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Button, Grid } from '@mui/material';
+import Input from '@mui/material/Input';
+
 
 const FileUploader = ({ viewPos, paddle, onResponseReceived, returnPng }) => {
     // const [imageSrc, setImageSrc] = useState(null);
@@ -36,10 +39,66 @@ const FileUploader = ({ viewPos, paddle, onResponseReceived, returnPng }) => {
     };
 
     return (
-        <div>
-            <input type="file" id="dicomInput" onChange={handleFileChange} />
-            {/* {imageSrc && <img src={imageSrc} alt="Processed" />} */}
-        </div>
+        <Grid item container direction="row" xs={12}>
+            <Grid item 
+                xs={6}
+                container
+                spacing={1}
+                direction="column"
+                // alignItems={'center'}
+                marginTop={2}>
+                    {/* <input type="file" id="dicomInput" onChange={handleFileChange} /> */}
+                    {/* {imageSrc && <img src={imageSrc} alt="Processed" />} */}
+                <Button
+                    variant="contained"
+                    component="label"
+                    sx={{
+                        backgroundColor: '#4C230A',
+                        maxWidth: '90%',
+                        fontSize: '10px'
+                    }}
+                >Upload file
+                    <Input
+                        type="file"
+                        id="dicomInput"
+                        onChange={handleFileChange}
+                        hidden
+                        sx={{
+                            color: '#4C230A'
+                        }}
+                    />
+                </Button>
+            </Grid>
+            <Grid item 
+                xs={6}
+                container
+                spacing={1}
+                direction="column"
+                // alignItems={'center'}
+                marginTop={2}>
+                    {/* <input type="file" id="dicomInput" onChange={handleFileChange} /> */}
+                    {/* {imageSrc && <img src={imageSrc} alt="Processed" />} */}
+                <Button
+                    variant="contained"
+                    component="label"
+                    sx={{
+                        backgroundColor: '#4C230A',
+                        maxWidth: '90%',
+                        fontSize: '10px'
+                    }}
+                >Enter
+                    <Input
+                        type="file"
+                        id="dicomInput"
+                        onChange={handleFileChange}
+                        hidden
+                        sx={{
+                            color: '#4C230A'
+                        }}
+                    />
+                </Button>
+            </Grid>
+        </Grid>
     );
 };
 

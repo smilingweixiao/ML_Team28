@@ -18,7 +18,7 @@
     "@aws-amplify/ui-react": "^4.6.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.20",
+    "@mui/material": "^5.15.1",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",
     "aws-amplify": "^5.2.4",

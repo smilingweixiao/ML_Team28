@@ -250,6 +250,7 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
         handle_list.append('hough')
         print('do ', handle_list, 'in preprocess')
         _, buffer = cv2.imencode('.png', hough_img)
+        cv2.imwrite('preprocessed.png', buffer)
         png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
         return png_as_base64, view_pos, paddle, handle_list
@@ -258,6 +259,7 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
         #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
         print('do ', handle_list, 'in preprocess')
         _, buffer = cv2.imencode('.png', clahe_img)
+        cv2.imwrite('.\\preprocessed\\preprocessed.png', buffer)
         png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
         return png_as_base64, view_pos, paddle, handle_list
