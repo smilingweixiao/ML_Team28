@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Grid, Typography } from '@mui/material';
 
 const HuggingfaceUploader = ({ img }) => {
     const [response, setResponse] = useState(null);
@@ -56,14 +57,30 @@ const HuggingfaceUploader = ({ img }) => {
 
     return (
         <div>
-            {response && (
+            {response ? (
                 <div id="responseOutput">
+                    <Grid container direction="row">
                     {response.map((item, index) => (
-                        <div key={index}>
-                            Label: {item.label}, Score: {item.score.toFixed(2)}
-                        </div>
+                        <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
+                            {/* <div key={index}>
+                                Label: {item.label}, Score: {item.score.toFixed(2)}
+                            </div> */}
+                            <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>probility of {item.label}: {item.score.toFixed(2)}</Typography>
+                        </Grid>
                     ))}
+                    </Grid>
                 </div>
+            ):
+            (<div>
+                <Grid container direction="row">
+                    <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
+                        <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>probility of mass:</Typography>
+                    </Grid>
+                    <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
+                        <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}}>probility of background:</Typography>
+                    </Grid>
+                </Grid>
+            </div>
             )}
         </div>
     );
