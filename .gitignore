@@ -15,6 +15,7 @@ datasets/image/MIAS_png
 datasets/image/INbreast
 datasets/image/INbreast_png
 datasets/label/train/*.txt
+datasets/table/*.csv
 
 src/yolov7/weights/*.pt
 src/yolov7/models/__pycache__
