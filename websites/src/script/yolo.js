@@ -42,34 +42,37 @@ const YoloUploader = ({onResponseReceived, img}) => {
             <div id="responseOutput">
                 
                 {response.labels.map((item, index) => (
-                    <Grid container direction="row">
-                        <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
-                            <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>
-                                <div>
-                                    xmin, xmax, ymin, ymax of the detection:
-                                </div>
-                                <div>
-                                    {item.xmin.toFixed(2)}, {item.xmax.toFixed(2)}, {item.ymin.toFixed(2)}, {item.ymax.toFixed(2)}
-                                </div>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
-                            <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>confidence is: {item.confidence.toFixed(2)}</Typography>
-                        </Grid>
-                    </Grid>
+                    // <Grid container direction="row">
+                    //     <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
+                    //         <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>
+                    //             <div>
+                    //                 xmin, xmax, ymin, ymax of the detection:
+                    //             </div>
+                    //             <div>
+                    //                 {item.xmin.toFixed(2)}, {item.xmax.toFixed(2)}, {item.ymin.toFixed(2)}, {item.ymax.toFixed(2)}
+                    //             </div>
+                    //         </Typography>
+                    //     </Grid>
+                    //     <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
+                    //         <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>confidence is: {item.confidence.toFixed(2)}</Typography>
+                    //     </Grid>
+                    // </Grid>
+                    <div></div>
                 ))}
                 
             </div>
         ):
         (<div>
-            <Grid container direction="row">
+            
+            {/* <Grid container direction="row">
                 <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
                     <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}} variant='body1'>(xmin, xmax, ymin, ymax) of the detection:</Typography>
                 </Grid>
                 <Grid item xs={12} sx={{paddingTop:'20px', paddingBottom: '25px'}}>
                     <Typography sx={{paddingBottom:'5px', maxWidth: '90%', borderBottom: 'solid 1px', borderColor: 'gray'}}>confidence is:</Typography>
                 </Grid>
-            </Grid>
+            </Grid> */}
+            
         </div>
         )}
     </div>

@@ -159,7 +159,6 @@ const DefaultLayout = () => {
                 </Grid>
                 <Grid item container direction="row" xs={4} sx={{paddingBottom: '10px'}}>
                   <YoloUploader onResponseReceived={handleYoloReceived} img={preprocess_img} />
-                  
                 </Grid>
               </Grid>
             </Col>
