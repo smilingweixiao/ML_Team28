@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, BrowserRouter, Route } from 'react-router-dom';
 
-import DefaultLayout from './layouts/default';
+import DefaultLayout from './layouts/default_yolo';
 
 
 const Router = () => {

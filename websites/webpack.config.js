@@ -41,9 +41,14 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://localhost:9000',
-        router: () => 'http://localhost:3000',
+        router: () => 'http://localhost:5000',
         logLevel: 'debug' /*optional*/
-      }
+      },
+      '/detect': {
+        target: 'http://localhost:9000',
+        router: () => 'http://localhost:5000',
+        logLevel: 'debug' /*optional*/
+      },
     }
   },
   plugins: [
