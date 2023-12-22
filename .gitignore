@@ -18,6 +18,7 @@ datasets/label/train/*.txt
 datasets/table/*.csv
 
 websites/src/server/path_to_save_files
+websites/src/server/runs
 src/yolov7/weights/*.pt
 src/yolov7/models/__pycache__
 src/yolov7/utils/__pycache__
