@@ -20,6 +20,7 @@ DOWNLOAD_PNG = '.\\preprocessed\\preprocessed.png'
 #DOWNLOAD_PNG = '.\\preprocessed\\1.2.826.0.1.3680043.8.498.69071597029523690507650697989983609866.dcm.png'
 
 YOLO_IMG = '.\\runs\\detect\\exp\\preprocessed.png'
+YOLO_LABEL = '.\\runs\\detect\\exp\\labels\\preprocessed.txt'
 #YOLO_IMG = '.\\runs\\detect\\exp\\1.2.826.0.1.3680043.8.498.69071597029523690507650697989983609866.dcm.png'
 
 
@@ -72,22 +73,42 @@ def yolo_detect():
         response.headers.add('Access-Control-Allow-Methods', 'POST')
         return response
     
-    
     #png_file = Image.open(DOWNLOAD_PNG)
     print('DOING YOLOOOOOOOO')
     yolo(source=DOWNLOAD_PNG)
     
-    print('DOING READDDDDDDD')
     buffer = cv2.imread(YOLO_IMG)
     #png = base64.b64encode(buffer).decode('utf-8')
-    _, buffer = cv2.imencode('.png', buffer)
-    png = base64.b64encode(buffer).decode('utf-8')
+    _, buffer_en = cv2.imencode('.png', buffer)
+    png = base64.b64encode(buffer_en).decode('utf-8')
+    
+    with open(YOLO_LABEL, 'r') as f:
+        labels = []
+        w = buffer.shape[1]
+        h = buffer.shape[0]
+        
+        for label in f.readlines():
+            #labels.append(label.split())
+            label = eval(label)
+            x_center, y_center, yolo_w, yolo_h, conf =\
+            float(label[0]), float(label[1]), float(label[2]), float(label[3]), float(label[4])
+            dct = {'xmin': (x_center * 2 * w - yolo_w * w) / 2, \
+                   'xmax': (x_center * 2 * w + yolo_w * w) / 2, \
+                   'ymin': (y_center * 2 * h - yolo_h * h) / 2, \
+                   'ymax': (y_center * 2 * h + yolo_h * h) / 2, \
+                   'confidence': conf}
+            labels.append(dct)                   
+            
+
+    
+    print('label = ', labels)
+    
     
     if isinstance(png, np.ndarray):
         png = png.tolist()
         
        
-    return jsonify({'png': png})
+    return jsonify({'png': png, 'labels': labels})
 
 if __name__ == '__main__':
     app.run(debug=True)
