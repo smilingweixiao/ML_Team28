@@ -1,4 +1,5 @@
 import cv2
+import os
 import pydicom
 import base64
 import matplotlib.pyplot as plt
@@ -241,22 +242,31 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
     handle_list.append('bilateral_filter')
     handle_list.append('clahe')
     
-    
-    if type(view_pos) is str and view_pos.upper() == 'MLO':
+    #if type(view_pos) is str and view_pos.upper() == 'MLO'
+    if view_pos == "2":
         rows, cols = clahe_img.shape
         roi = clahe_img[:3 * rows//4, :cols//3]
         hough_img = hough(roi, clahe_img)
         #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', hough_img)
         handle_list.append('hough')
         print('do ', handle_list, 'in preprocess')
+        
+        file_path = os.path.join('preprocessed', 'preprocessed.png')
+        print("DEGUGGGGGGGGGGG",file_path)
+        cv2.imwrite(file_path, hough_img)
+        
         _, buffer = cv2.imencode('.png', hough_img)
         png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
         return png_as_base64, view_pos, paddle, handle_list
         
-    else:
-        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
+    else:        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
         print('do ', handle_list, 'in preprocess')
+        
+        file_path = os.path.join('preprocessed', 'preprocessed.png')
+        print("DEGUGGGGGGGGGGG",file_path)
+        cv2.imwrite(file_path, clahe_img)
+        
         _, buffer = cv2.imencode('.png', clahe_img)
         png_as_base64 = base64.b64encode(buffer).decode('utf-8')
         #----------------------------------------------
