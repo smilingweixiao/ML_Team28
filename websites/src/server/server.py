@@ -89,7 +89,7 @@ def yolo_detect():
         
         for label in f.readlines():
             #labels.append(label.split())
-            label = eval(label)
+            label = label.split(' ')
             x_center, y_center, yolo_w, yolo_h, conf =\
             float(label[0]), float(label[1]), float(label[2]), float(label[3]), float(label[4])
             dct = {'xmin': (x_center * 2 * w - yolo_w * w) / 2, \
@@ -110,5 +110,8 @@ def yolo_detect():
        
     return jsonify({'png': png, 'labels': labels})
 
+@app.route('/api/detect/', methods=['POST'])
+def crop_png():
+    return
 if __name__ == '__main__':
     app.run(debug=True)

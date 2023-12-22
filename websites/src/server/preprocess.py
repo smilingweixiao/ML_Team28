@@ -226,7 +226,7 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
         return None, view_pos, paddle, None
     handle_list=[]
     
-    print('Preprocessing data in HuggingFace...')
+    print('Preprocessing data in Server...')
 
     ori_img, handle_list = before_preprocess_interface(dicom, paddle, handle_list)
     
@@ -252,7 +252,6 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
         print('do ', handle_list, 'in preprocess')
         
         file_path = os.path.join('preprocessed', 'preprocessed.png')
-        print("DEGUGGGGGGGGGGG",file_path)
         cv2.imwrite(file_path, hough_img)
         
         _, buffer = cv2.imencode('.png', hough_img)
@@ -261,10 +260,11 @@ def preprocess_interface(dicom_path=None, view_pos=None, paddle=None):
         return png_as_base64, view_pos, paddle, handle_list
         
     else:        #cv2.imwrite(r"C:\Users\y9109\Desktop\nthu\junior1\ml\project\ML_Team28\datasets\image\web_png"+r'\test.png', clahe_img)
+        
+        
         print('do ', handle_list, 'in preprocess')
         
         file_path = os.path.join('preprocessed', 'preprocessed.png')
-        print("DEGUGGGGGGGGGGG",file_path)
         cv2.imwrite(file_path, clahe_img)
         
         _, buffer = cv2.imencode('.png', clahe_img)

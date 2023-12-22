@@ -16,7 +16,7 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized,
 class yolo_detection():
     
     def __init__(self, weights='.\\best.pt', source='',\
-                img_size=640, conf_thres=0.25, iou_thres=0.45, device='', view_img=False, save_txt=True, save_conf=True, nosave=False,\
+                img_size=640, conf_thres=0.1, iou_thres=0.45, device='', view_img=False, save_txt=True, save_conf=True, nosave=False,\
                 classes=0, agnostic_nms=False, augment=False, update=False, project='runs\detect', name='exp', exist_ok=False, no_trace=False):
         self.weights = weights
         self.source = source
@@ -135,6 +135,9 @@ class yolo_detection():
                 txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
 
+                with open (txt_path + '.txt', 'w') as f:
+                    f.write('')
+                    
                 if len(det):
                     # Rescale boxes from img_size to im0 size
                     det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
@@ -144,23 +147,22 @@ class yolo_detection():
                         n = (det[:, -1] == c).sum()  # detections per class
                         s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
+                    index = 1
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
                         if save_txt:  # Write to file
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                             line = (*xywh, float(conf)) if self.save_conf else xywh  # label format
                             print('text pathe =========', txt_path)
-                            with open (txt_path + '.txt', 'w') as f:
-                                f.write(str(line).rstrip()+'\n')
-                            #with open(txt_path + '.txt', 'a') as f:
-                            #    f.write(('%g ' * len(line)).rstrip() % line + '\n')
+                            #with open (txt_path + '.txt', 'w') as f:
+                            #    f.write(str(line).rstrip()+'\n')
+                            with open(txt_path + '.txt', 'a') as f:
+                                f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
                         if save_img or view_img:  # Add bbox to image
                             label = f'{names[int(cls)]} {conf:.2f}'
-                            plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
-                else:
-                    with open (txt_path + '.txt', 'w') as f:
-                        f.write('')
+                            plot_one_box(xyxy, im0, label=str(index), color=colors[int(cls)], line_thickness=10)
+                        index += 1
                 
                 # Print time (inference + NMS)
                 print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
