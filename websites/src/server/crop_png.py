@@ -1,13 +1,10 @@
-from PIL import Image, ImageDraw
+import cv2
 
-def crop_png(png, x, y, w, h): 
-
-    #image_path = png_path + name + '.png'
-    #mark_save_path = mark_path + name + '.png'
-    img = png
-    crop_box = (x, y, x+w, y+h)
-    draw = ImageDraw.Draw(img)
-    draw.rectangle(crop_box, outline="red")
+def crop_png(png_path, crop_path, labels):
     
-    #img.save(mark_save_path)
-    return img
+    img = cv2.imread(png_path)
+    
+    for i, lab in enumerate(labels, start=1):
+        
+        crop_img = img[int(lab['ymin']):int(lab['ymax']), int(lab['xmin']):int(lab['xmax'])]
+        cv2.imwrite(crop_path + 'crop' +str(i) + '.png', crop_img)

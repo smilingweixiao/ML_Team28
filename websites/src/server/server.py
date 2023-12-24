@@ -1,5 +1,7 @@
 from preprocess import preprocess_interface as pi
 from detect import yolo_detection as yolo
+from cnn import cnn_detection as cnn
+from crop_png import crop_png as crop
 from flask import Flask, jsonify, request, render_template, make_response
 from werkzeug.utils import secure_filename
 import os
@@ -8,6 +10,7 @@ from PIL import Image
 from flask_cors import CORS
 import numpy as np
 import base64
+from pathlib import Path
 
 
 app = Flask(__name__)
@@ -22,6 +25,8 @@ DOWNLOAD_PNG = '.\\preprocessed\\preprocessed.png'
 YOLO_IMG = '.\\runs\\detect\\exp\\preprocessed.png'
 YOLO_LABEL = '.\\runs\\detect\\exp\\labels\\preprocessed.txt'
 #YOLO_IMG = '.\\runs\\detect\\exp\\1.2.826.0.1.3680043.8.498.69071597029523690507650697989983609866.dcm.png'
+
+CROP_DIR = '.\\cropped\\'
 
 
 # Create the directory if it doesn't exist
@@ -64,7 +69,7 @@ def get_data():
     return jsonify({'png': png, 'view_pos': view_pos, 'paddle': paddle, 'handle_list': handle_list})
 
 @app.route('/api/detect/', methods=['POST'])
-def yolo_detect():
+def model_detect():
     if request.method == 'OPTIONS':
         # Handle preflight request
         response = make_response()
@@ -97,18 +102,31 @@ def yolo_detect():
                    'ymin': (y_center * 2 * h - yolo_h * h) / 2, \
                    'ymax': (y_center * 2 * h + yolo_h * h) / 2, \
                    'confidence': conf}
-            labels.append(dct)                   
+            labels.append(dct)
             
-
-    
-    print('label = ', labels)
-    
-    
+    print('label = ', labels)        
     if isinstance(png, np.ndarray):
-        png = png.tolist()
+        png = png.tolist()          
+    
+    print('DOING CROPPPPPPP')          
+
+    if os.path.exists(CROP_DIR):
+        crop_old = os.listdir(CROP_DIR)
+        for old in crop_old:
+            old_path = os.path.join(CROP_DIR, old)
+            os.remove(old_path)
         
+    os.makedirs(CROP_DIR, exist_ok=True)
+    crop(labels=labels, png_path=DOWNLOAD_PNG, crop_path=CROP_DIR)
+    
+    print('DOING CNNNNNNNNN') 
+    
+    allLables = cnn(labels=labels, png_path=CROP_DIR)
+    
+    print(allLables)
+    
        
-    return jsonify({'png': png, 'labels': labels})
+    return jsonify({'png': png, 'labels': allLables})
 
 @app.route('/api/detect/', methods=['POST'])
 def crop_png():

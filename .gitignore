@@ -1,3 +1,4 @@
+node_modules
 model/yolov7/datasets
 datasets/image/clean/*.dcm
 datasets/image/miss/*.dcm
@@ -18,9 +19,13 @@ datasets/label/train/*.txt
 datasets/table/*.csv
 
 websites/src/server/path_to_save_files
-websites/src/server/runs
+websites/src/server/runs/detect/exp/*.png
 src/yolov7/weights/*.pt
 src/yolov7/models/__pycache__
 src/yolov7/utils/__pycache__
 src/yolov7/__pycache__
 *.pt
+*.pth
+*.png
+*.dcm
+*.txt
