@@ -6,6 +6,7 @@ from matplotlib import pylab as pylab
 import numpy as np
 import pandas as pd
 import os
+from tqdm import tqdm
 from skimage.feature import canny
 from skimage.filters import sobel
 from skimage.transform import hough_line, hough_line_peaks
@@ -404,7 +405,7 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
     else:
         if mass_only is True:
             
-            for name in mass_dname_list:
+            for name in tqdm(mass_dname_list):
                 dcm_pth = mass_dcm_path+name
                 png_pth = mass_png_path+name+'.png'
                 print(dcm_pth)
@@ -474,6 +475,7 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
             assert 0 < -1, 'wrong miss_metadata_path'
         
     #----get png name----#
+    
     mass_pname_list = []
     mass_dname_list = []
     health_pname_list = []
@@ -547,11 +549,11 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
            
         
     if  mass_only is True or health_only is False:
-        for name, pos in mass_zip:
+        for name, pos in tqdm(mass_zip):
             ori_path = mass_png_path+name
             new_path = mass_preprocess_png_path+name
             
-            print('Preprocessing mass data...', name)
+            print('\nPreprocessing mass data...', name)
             bil_img = bilateral_filter(ori_path)
             if not isinstance(bil_img, np.ndarray):
                 print('Already remove')
@@ -601,14 +603,15 @@ def main():
     parser.add_argument("--enhance_only", action="store_true", help="Enable enhance_only")
     parser.add_argument("--table_only", action="store_true", help="Enable table_only")
     parser.add_argument("--paddle_only", action="store_true", help="Enable paddle_only")
-    #parser.add_argument("--mass_only", action="store_true", help="Enable mass_only")
-    #parser.add_argument("--health_only", action="store_true", help="Enable health_only")
 
     # Add optional arguments with default values
     parser.add_argument("--mass_metadata_path", default="..\\..\\datasets\\table\\mass_metadata.csv", help="Path to mass metadata")
-    #parser.add_argument("--health_metadata_path", default="..\\..\\datasets\\table\\health_metadata.csv", help="Path to health metadata")
+    parser.add_argument("--mass_dcm_path", default="..\\..\\datasets\\image\\mass\\", help="Path to mass PNG images")
     parser.add_argument("--mass_png_path", default="..\\..\\datasets\\image\\mass_png\\", help="Path to mass PNG images")
-    #parser.add_argument("--health_png_path", default="..\\..\\datasets\\image\\health_png_test\\", help="Path to health PNG images")
+    parser.add_argument("--mass_preprocess_png_path", default="..\\..\\datasets\\image\\mass_preprocess_png\\", help="Path to mass PNG images")
+    parser.add_argument("--output_mtable_path", default="..\\..\\datasets\\table\\mass_metadata_test.csv", help="Path to mass PNG images")
+    parser.add_argument("--fname_column", default="anon_dicom_path", help="Path to mass PNG images")
+       
     # Add other optional arguments similarly
 
     args = parser.parse_args()
@@ -619,11 +622,12 @@ def main():
         table_only=args.table_only,
         paddle_only=args.paddle_only,
         mass_only=True,
-        health_only=False,
         mass_metadata_path=args.mass_metadata_path,
-        health_metadata_path="..\\..\\datasets\\table\\health_metadata.csv",
+        mass_dcm_path = args.mass_dcm_path,
         mass_png_path=args.mass_png_path,
-        health_png_path="..\\..\\datasets\\image\\health_png_test\\",
+        mass_preprocess_png_path = args.mass_preprocess_png_path,
+        output_mtable_path = args.output_mtable_path,
+        fname_column = args.fname_column
         # Pass other arguments similarly
     )
 
