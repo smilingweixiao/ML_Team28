@@ -38,9 +38,9 @@ https://registry.opendata.aws/emory-breast-imaging-dataset-embed/
 - - -
 
 ## Preprocess(optional)
-:::info
+```
 You can skip this step if you only want to run the application with our trained weights.
-:::
+```
 * Put theose DICOM image with mass at **path/to/ML_Team28/datasets/image/mass**
 * Put those metadata file at **path/to/ML_Team28/datasets/table**
 
