@@ -1,7 +1,7 @@
 # Mass Detection-Team28
-:::
+```
 If you are not running on a Windows system, please be attentive to all **path-related aspects and command line instructions**, and automatically convert them to the corresponding commands for your system.
-:::
+```
 
 * repo name: ML_Team28
 
@@ -55,9 +55,9 @@ There are several arguments you can add in command line to help you preprocess e
 
 
 ## Training Model(optional)
-:::info
+```
 You can skip this step if you only want to run the application with our trained weights.
-:::
+```
 ### YOLO
 李秉綸
 
