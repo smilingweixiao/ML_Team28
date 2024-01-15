@@ -14,8 +14,6 @@ from matplotlib import pylab as pylab
 from tags import DCM_tags
 from to_8_bit_png import process_dicom, apply_windowing as windowing
 
-# for test heres
-#dcm_pth = r"..\image\clean\1.2.826.0.1.3680043.8.498.10000118454892828674141713285403927285.dcm"
 ROI = 'ROI_coords'
 POS = 'ViewPosition'
 PADDLE = '0_ViewCodeSequence_0_ViewModifierCodeSequence_CodeMeaning'
@@ -37,10 +35,6 @@ def get_png(dcm_pth, png_pth):
     return arr
 
 def detect_paddle_shape(image):
-    # 灰度化
-    #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    #_, binary = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
 
     contours, _ = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -351,8 +345,6 @@ def hough(image, cla_image):
     else:
         return cla_image
 
-
-
 """
 1. table_only: you have table and need to update them to be consistent with image
 2. paddle_only: you have png files and need to update them with removing paddles => True; Otherwise => False
@@ -605,5 +597,4 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
                 print('continue')
           
     print('All Finish !!!!!!!')
-    
-#preprocess_interface(enhance_only=False, table_only=True)
+
