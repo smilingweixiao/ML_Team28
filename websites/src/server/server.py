@@ -15,16 +15,14 @@ from pathlib import Path
 
 app = Flask(__name__)
 CORS(app)
-#CORS(app, resources={r"/*": {"origins": "http://localhost:9000"}})
 
 # Define your directory path for saving files
 UPLOAD_FOLDER = 'path_to_save_files'
 DOWNLOAD_PNG = '.\\preprocessed\\preprocessed.png'
-#DOWNLOAD_PNG = '.\\preprocessed\\1.2.826.0.1.3680043.8.498.69071597029523690507650697989983609866.dcm.png'
+
 
 YOLO_IMG = '.\\runs\\detect\\exp\\preprocessed.png'
 YOLO_LABEL = '.\\runs\\detect\\exp\\labels\\preprocessed.txt'
-#YOLO_IMG = '.\\runs\\detect\\exp\\1.2.826.0.1.3680043.8.498.69071597029523690507650697989983609866.dcm.png'
 
 CROP_DIR = '.\\cropped\\'
 
@@ -55,11 +53,6 @@ def get_data():
 
     # Process the file with your preprocess_interface function
     png, view_pos, paddle, handle_list = pi(dicom_path=file_path, view_pos=view_pos, paddle=paddle)
-    #
-    ##upload the png
-    #dest_path = os.path.join(UPLOAD_FOLDER, PNG_NAME)
-    #image_to_save = Image.fromarray(png.encode('utf-8').decode('base64'))
-    #image_to_save.save(dest_path)
 
     if isinstance(handle_list, np.ndarray):
         handle_list = handle_list.tolist()

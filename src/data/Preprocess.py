@@ -13,6 +13,7 @@ from skimage.draw import polygon
 
 from tags import DCM_tags
 from to_8_bit_png import process_dicom, apply_windowing as windowing
+import argparse
 
 ROI = 'ROI_coords'
 POS = 'ViewPosition'
@@ -593,3 +594,38 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
           
     print('All Finish !!!!!!!')
 
+def main():
+    parser = argparse.ArgumentParser(description="Preprocess Interface")
+
+    # Add command-line arguments
+    parser.add_argument("--enhance_only", action="store_true", help="Enable enhance_only")
+    parser.add_argument("--table_only", action="store_true", help="Enable table_only")
+    parser.add_argument("--paddle_only", action="store_true", help="Enable paddle_only")
+    #parser.add_argument("--mass_only", action="store_true", help="Enable mass_only")
+    #parser.add_argument("--health_only", action="store_true", help="Enable health_only")
+
+    # Add optional arguments with default values
+    parser.add_argument("--mass_metadata_path", default="..\\..\\datasets\\table\\mass_metadata.csv", help="Path to mass metadata")
+    #parser.add_argument("--health_metadata_path", default="..\\..\\datasets\\table\\health_metadata.csv", help="Path to health metadata")
+    parser.add_argument("--mass_png_path", default="..\\..\\datasets\\image\\mass_png\\", help="Path to mass PNG images")
+    #parser.add_argument("--health_png_path", default="..\\..\\datasets\\image\\health_png_test\\", help="Path to health PNG images")
+    # Add other optional arguments similarly
+
+    args = parser.parse_args()
+
+    # Call your function with the specified arguments
+    preprocess_interface(
+        enhance_only=args.enhance_only,
+        table_only=args.table_only,
+        paddle_only=args.paddle_only,
+        mass_only=True,
+        health_only=False,
+        mass_metadata_path=args.mass_metadata_path,
+        health_metadata_path="..\\..\\datasets\\table\\health_metadata.csv",
+        mass_png_path=args.mass_png_path,
+        health_png_path="..\\..\\datasets\\image\\health_png_test\\",
+        # Pass other arguments similarly
+    )
+
+if __name__ == "__main__":
+    main()
