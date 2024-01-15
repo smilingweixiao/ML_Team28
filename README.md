@@ -1,11 +1,13 @@
-# ML_Team28
-------
+# Setup
 
-### directory
-- ML
-    - code
-    - image
-    - table
+* Step1
+> pip install -r /absolute path/to/ML_Team28/src/requirements.txt
 
-**Do not merge to main!!!**
-**Pull before Push!!!**
+* Step2
+
+
+# Preprocess(optional)
+
+# Training Model(optional)
+
+# Run our application

@@ -2,6 +2,7 @@ import cv2
 import pydicom
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from matplotlib import pylab as pylab
 import numpy as np
 import pandas as pd
 import os
@@ -9,7 +10,6 @@ from skimage.feature import canny
 from skimage.filters import sobel
 from skimage.transform import hough_line, hough_line_peaks
 from skimage.draw import polygon
-from matplotlib import pylab as pylab
 
 from tags import DCM_tags
 from to_8_bit_png import process_dicom, apply_windowing as windowing
@@ -104,8 +104,7 @@ def fix_paddle(arr, type):
     extracted_tissue = arr
     
     if type == 'Spot Compression':
-        
-        
+             
         hist, _ = np.histogram(arr.flatten(), bins=256, range=[0, 256])
         
         peak_intensity = np.argmax(hist)
@@ -443,16 +442,16 @@ def before_preprocess_interface(table_only=False, paddle_only=False, mass_only=T
 
 
 def preprocess_interface(enhance_only = True, table_only=False, paddle_only=False, mass_only=True, health_only=False,\
-    mass_metadata_path = "..\\..\\datasets\\table\\clean_metadata.csv",\
-    health_metadata_path = "..\\..\\datasets\\table\\miss_metadata.csv",\
-    mass_png_path = "..\\..\\datasets\\image\\clean_png\\",\
-    health_png_path = "..\\..\\datasets\\image\\miss_png_test\\",\
-    mass_dcm_path = "..\\..\\datasets\\image\\clean\\",\
-    health_dcm_path =  "..\\..\\datasets\\image\\miss\\",\
-    mass_preprocess_png_path = "..\\..\\datasets\\image\\clean_preprocess_png\\",\
-    health_preprocess_png_path = "..\\..\\datasets\\image\\miss_preprocess_png\\",\
-    output_mtable_path = "..\\..\\datasets\\table\\clean_metadata_test.csv",\
-    output_htable_path = "..\\..\\datasets\\table\\miss_metadata_test.csv",\
+    mass_metadata_path = "..\\..\\datasets\\table\\mass_metadata.csv",\
+    health_metadata_path = "..\\..\\datasets\\table\\health_metadata.csv",\
+    mass_png_path = "..\\..\\datasets\\image\\mass_png\\",\
+    health_png_path = "..\\..\\datasets\\image\\health_png_test\\",\
+    mass_dcm_path = "..\\..\\datasets\\image\\mass\\",\
+    health_dcm_path =  "..\\..\\datasets\\image\\health\\",\
+    mass_preprocess_png_path = "..\\..\\datasets\\image\\mass_preprocess_png\\",\
+    health_preprocess_png_path = "..\\..\\datasets\\image\\health_preprocess_png\\",\
+    output_mtable_path = "..\\..\\datasets\\table\\mass_metadata_test.csv",\
+    output_htable_path = "..\\..\\datasets\\table\\health_metadata_test.csv",\
     fname_column = "anon_dicom_path"):
     
     #----check input type----#
@@ -550,8 +549,6 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
         for name, pos in mass_zip:
             ori_path = mass_png_path+name
             new_path = mass_preprocess_png_path+name
-            #ww = int(eval(mass_metadata.loc[i, 'window'])[0])
-            #wc = int(eval(mass_metadata.loc[i, 'window'])[1])
             
             print('Preprocessing mass data...', name)
             bil_img = bilateral_filter(ori_path)
@@ -565,10 +562,8 @@ def preprocess_interface(enhance_only = True, table_only=False, paddle_only=Fals
                 roi = clahe_img[:3 * rows//4, :cols//3]
                 hough_img = hough(roi, clahe_img)
                 window_img = hough_img
-                #window_img = windowing(arr=hough_img, window_width=ww//2, window_center=wc, voi_func=1)
             else:
                 window_img = clahe_img
-                #window_img = windowing(arr=clahe_img, window_width=ww//2, window_center=wc, voi_func=1)
                 
             cv2.imwrite(new_path, window_img)
             print('continue')

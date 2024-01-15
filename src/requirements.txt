@@ -1,0 +1,7 @@
+matplotlib==3.8.0
+numpy==1.26.2
+opencv_python==4.8.1.78
+pandas==2.1.1
+pydicom==2.4.3
+scikit-image==0.22.0
+opencv-python==4.8.1.78
