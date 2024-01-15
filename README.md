@@ -2,8 +2,9 @@
 
 If you are not running on a Windows system, please be attentive to all `path-related aspects and command line instructions`, and automatically convert them to the corresponding commands for your system.
 
-
 * repo name: ML_Team28
+* 
+- - -
 
 ## Setup
 
@@ -34,6 +35,8 @@ You should follow the below link to get dataset (EMBED)
 
 https://registry.opendata.aws/emory-breast-imaging-dataset-embed/
 
+- - -
+
 ## Preprocess(optional)
 :::info
 You can skip this step if you only want to run the application with our trained weights.
@@ -53,6 +56,7 @@ There are several arguments you can add in command line to help you preprocess e
 * table_only
 * paddle_only
 
+- - -
 
 ## Training Model(optional)
 ```
@@ -63,6 +67,8 @@ You can skip this step if you only want to run the application with our trained 
 
 ### CNN
 王品舜
+
+- - -
 
 ## Run application
 
