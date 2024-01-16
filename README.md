@@ -61,7 +61,7 @@ https://registry.opendata.aws/emory-breast-imaging-dataset-embed/
 You can skip this step if you only want to run the application with our trained weights.
 ```
 
-* Put theose DICOM image with mass at `path/to/ML_Team28/datasets/image/mass/`
+* Put those DICOM image with mass at `path/to/ML_Team28/datasets/image/mass/`
 * Put those metadata file at `path/to/ML_Team28/datasets/table/`
 
 We will preprocess all the `DICOM images` located in the `mass` folder and save those `preprocessed PNG image` in the default folder named `mass_png`. 
@@ -95,7 +95,7 @@ Notify: Training YOLO will takes you a long time, we strongly suggest you to use
 
 #### Given files explanation
 * Yolo has its own format of labels, you can run *labels.py* python script to generate labels given by metadata.
-* After training, if you want to convert YOLO's txt output file into csv, you can run *label_to_csv.py* python scripy.
+* After training, if you want to convert YOLO's txt output file into csv, you can run *label_to_csv.py* python script.
 * If you want to check YOLO's performance or ground truth image, you can run *crop_by_csv.py* and *crop_by_txt.py* to crop ROIs.
 * If lots of files need to transfer between directory, we also provide *move_file.py* for your convenience.
 * Model's config file of YOLO is *yolov7-mammo.yaml*.
@@ -111,7 +111,7 @@ Notify: Training YOLO will takes you a long time, we strongly suggest you to use
 * Create datasets, datasets\images, datasets\labels, datasets\images\train, datasets\images\val, datasets\labels\train, datasets\labels\val folders under YOLO's folder.
 * Move preprocessed images into YOLO_folder\datasets\images\train and YOLO_folder\datasets\images\val, you can use *move_file.py*.
 * Read the documentation string and modify file path in *labels.py*.
-* Run "labels.py* to generate labels and file list for YOLO.
+* Run *labels.py* to generate labels and file list for YOLO.
 
 #### Start Training
 Run below command, don't forget to check path, the weight can be obtain in YOLOv7's Github repo.
@@ -169,5 +169,5 @@ python server.py
 
 - - -
 
-Welcom to contat us if you have any question!
+Welcom to contact us if you have any question!
 
