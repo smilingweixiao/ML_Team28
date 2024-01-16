@@ -15,6 +15,7 @@ If you are not running on a Windows system, please be attentive to all `path-rel
 If you want to know more about our research detail, please get into the following link!
 https://hackmd.io/@MLTeam28/Team28/%2FuEdYu4-ATnmnvHYQS7KVKw
 
+
   
 - - -
 
@@ -44,7 +45,9 @@ Follow the below link to get TWO weights trained (CNN's and YOLO's) for our appl
 
 If you want to use your own trained weight, you can skip this step.
 
-https://drive.google.com/drive/folders/1vUawesFi8gmUp9oZKanCDosFeXifsr_i?usp=sharing
+Link to the two weights:
+* [resnext_newyolo__checkpoint_best.pth](https://drive.google.com/file/d/1VnspBLDTcL7WnQpr-E_XSGatJUH1uEJr/view?usp=sharing)
+* [best.pt](https://drive.google.com/file/d/12cE0a1t9MGOFEy4CsU-KIlxJ5fcBe2tJ/view?usp=sharing)
 
 ### Step4 (get dataset)
 You should follow the below link to get dataset (EMBED)
@@ -87,14 +90,73 @@ You can skip this step if you only want to run the application with our trained 
 ```
 brief description
 ### YOLO
-李秉綸
+
+Notify: Training YOLO will takes you a long time, we strongly suggest you to use the provided weights.
+
+#### Given files explanation
+* Yolo has its own format of labels, you can run *labels.py* python script to generate labels given by metadata.
+* After training, if you want to convert YOLO's txt output file into csv, you can run *label_to_csv.py* python scripy.
+* If you want to check YOLO's performance or ground truth image, you can run *crop_by_csv.py* and *crop_by_txt.py* to crop ROIs.
+* If lots of files need to transfer between directory, we also provide *move_file.py* for your convenience.
+* Model's config file of YOLO is *yolov7-mammo.yaml*.
+* Data's config file of YOLO is *mammo.yaml*.
+* parameter is in *hyp.mammo.yaml*.
+
+#### Training Preparation
+* Clone YOLOv7 Github repo in another folder.
+* Change working directory into YOLO's folder.
+* Move *yolov7-mammo.yaml* into YOLO_folder\cfg\training.
+* Move *mammo.yaml* into YOLO_folder\data.
+* Move *hyp.mammo.yaml* into YOLO_folder\data.
+* Create datasets, datasets\images, datasets\labels, datasets\images\train, datasets\images\val, datasets\labels\train, datasets\labels\val folders under YOLO's folder.
+* Move preprocessed images into YOLO_folder\datasets\images\train and YOLO_folder\datasets\images\val, you can use *move_file.py*.
+* Read the documentation string and modify file path in *labels.py*.
+* Run "labels.py* to generate labels and file list for YOLO.
+
+#### Start Training
+Run below command, don't forget to check path, the weight can be obtain in YOLOv7's Github repo.
+```
+python .\train.py --weights .\weights\yolov7_training.pt  --cfg .\cfg\training\yolov7-mammo.yaml --hyp .\data\hyp.mammo.yaml --data .\data\mammo.yaml --batch-size x --epoch x --device x --img-size 640 --save_period x --adam
+```
+#### Training with CNN
+After training complete, we can generate training data for CNN. The command below will generate txt files for each images.
+```
+python .\detect.py --weights .\runs\train\exp\weights\best.pt --source .\datasets\images\val\ --conf-thres x --save-txt --save-conf
+```
+Then you will need to run *label_to_csv.py* to generate csv file for CNN's training.
+
+#### Start Inferencing
+You can run the same command as above to predict
+```
+python .\detect.py --weights .\runs\train\exp\weights\best.pt --source .\datasets\images\val\ --conf-thres x --save-txt --save-conf
+```
+
 
 ### CNN
-王品舜
+
+Notify: Training CNN will takes you a long time, we strongly suggest you to use the provided weights.
+
+#### Get weight you need in training CNN
+
+Please download the weight in the following link, and store it at `/path/to/ML_Team28/src/model/cnn/`
+
+[convnext_tf3_newyolo__checkpoint_best.pth](https://drive.google.com/file/d/1n07pL9wDpqSX_Fl4URyBZgI9eYnVcKSn/view?usp=sharing)
+
+
+#### Structure
+1. CNN model training
+2. CNN model evaluation
+3. Yolo+CNN evaluation
+
+#### Start training
+
+If you want to train your own CNN weights, please check the file`/path/to/ML_Team28/src/model/cnn/CNN_model_training_and_evaluation.ipynb`, and follow the instruction in that notebook to finish your training.
+
+
 
 - - -
 
-## Run application
+## Run Application
 To convey our project's capabilities, we have designed a website to showcase all of our work. 
 You can run the below command line instruction to make the websites work.
 ```
@@ -107,9 +169,5 @@ python server.py
 
 - - -
 
-## Contact
-You can contat us if you have any question!
+Welcom to contat us if you have any question!
 
-model group
-
-data group
