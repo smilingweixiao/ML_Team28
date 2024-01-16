@@ -111,7 +111,7 @@ Notify: Training YOLO will takes you a long time, we strongly suggest you to use
 * Create datasets, datasets\images, datasets\labels, datasets\images\train, datasets\images\val, datasets\labels\train, datasets\labels\val folders under YOLO's folder.
 * Move preprocessed images into YOLO_folder\datasets\images\train and YOLO_folder\datasets\images\val, you can use *move_file.py*.
 * Read the documentation string and modify file path in *labels.py*.
-* Run "labels.py* to generate labels and file list for YOLO.
+* Run *labels.py* to generate labels and file list for YOLO.
 
 #### Start Training
 Run below command, don't forget to check path, the weight can be obtain in YOLOv7's Github repo.
