@@ -88,7 +88,7 @@ There are several arguments you can add in command line to help you preprocess e
 ```
 You can skip this step if you only want to run the application with our trained weights.
 ```
-brief description
+
 ### YOLO
 
 Notify: Training YOLO will takes you a long time, we strongly suggest you to use the provided weights.
